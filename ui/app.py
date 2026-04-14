@@ -10,8 +10,8 @@ if st.button("Analyze Portfolio"):
     if username:
         with st.spinner(f"Analyzing {username}'s repositories..."):
             try:
-                # We are using the local backend URL for now
-                response = requests.post(f"http://127.0.0.1:8000/review?username={username}")
+                # Pointing to your Render Cloud Backend!
+                response = requests.post(f"https://student-github-reviewer-c8qf.onrender.com/review?username={username}")
                 
                 if response.status_code == 200:
                     data = response.json()
