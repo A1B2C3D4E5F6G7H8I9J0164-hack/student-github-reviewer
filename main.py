@@ -10,15 +10,21 @@ def home():
 
 @app.post("/review")
 def review_portfolio(username: str):
-    # 1. Create the starting point for our agents
-    initial_state = {"username": username}
-    
-    # 2. Tell the LangGraph brain to start thinking!
-    result = github_reviewer_app.invoke(initial_state)
-    
-    # 3. Return the AI's final answer
-    return {
-        "username": result["username"],
-        "extracted_data": result.get("github_data"),
-        "mentor_feedback": result.get("feedback")
-    }
+    try:
+        # 1. Create the starting point
+        initial_state = {"username": username}
+        
+        # 2. Invoke the graph
+        result = github_reviewer_app.invoke(initial_state)
+        
+        # 3. Clean up the response
+        return {
+            "username": result.get("username", username),
+            "extracted_data": result.get("github_data", {}),
+            "mentor_feedback": result.get("feedback", "No feedback generated.")
+        }
+    except Exception as e:
+        return {
+            "error": "Internal Server Error",
+            "details": str(e)
+        }
